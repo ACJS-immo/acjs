@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card">
+    <h2>Property Details</h2>
+    <p><strong>Displayed Price:</strong> {{ object.displayed_price }} €</p>
+    <p><strong>Surface Area:</strong> {{ object.surface_area }} m²</p>
+    <p><strong>Monthly Rent:</strong> {{ object.monthly_rent }} €</p>
+    <!-- Ajoute d'autres champs selon tes besoins -->
+</div>
+{% endblock %}

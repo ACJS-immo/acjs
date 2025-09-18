@@ -21,11 +21,12 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("study/", include("study.urls")),
-    path("owners/", include("rentals.urls_owners")),
-    path("buildings/", include("rentals.urls_buildings")),
-    path("properties/", include("rentals.urls_properties")),
-    path("tenants/", include("rentals.urls_tenants")),
-    path("leases/", include("rentals.urls_leases")),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+                  path("admin/", admin.site.urls),
+                  path("study/", include("study.urls")),
+                  path("owners/", include("rentals.urls_owners")),
+                  path("buildings/", include("rentals.urls_buildings")),
+                  path("properties/", include("rentals.urls_properties")),
+                  path("tenants/", include("rentals.urls_tenants")),
+                  path("leases/", include("rentals.urls_leases")),
+                  path('i18n/', include('django.conf.urls.i18n')),
+                  ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

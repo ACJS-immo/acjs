@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'study',
     'rentals',
-    'rentals.apps.RentalsConfig',  # Utilise la classe RentalsConfig pour activer ready()
+    # 'rentals.apps.RentalsConfig',  # Utilise la classe RentalsConfig pour activer ready()
 ]
 
 MIDDLEWARE = [
@@ -50,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'django.middleware.locale.LocaleMiddleware', # Middleware pour la langue (doit être après SessionMiddleware)
 ]
 
 ROOT_URLCONF = 'acjs.urls'
@@ -101,19 +102,33 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+#####
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
-USE_I18N = True
 
 USE_TZ = True
 
+# Langues disponibles
+# LANGUAGE_CODE = 'en'  # Langue par défaut
+# LANGUAGES = [
+#     ('en', 'English'),
+#     ('fr', 'Français'),
+#     ('es', 'Español'),  # Optionnel
+# ]
 
+# Activation de i18n
+USE_I18N = True
+USE_L10N = True  # Pour la localisation des formats (dates, nombres)
+
+# Dossier où Django stockera les traductions
+# LOCALE_PATHS = [
+#     os.path.join(BASE_DIR, 'locale'),
+# ]
+
+
+#####
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 

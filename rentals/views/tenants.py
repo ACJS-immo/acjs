@@ -9,6 +9,13 @@ class TenantListView(LoginRequiredMixin, ListView):
     context_object_name = 'tenants'
     paginate_by = 10
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        q = self.request.GET.get('q')
+        if q:
+            queryset = queryset.filter(last_name__icontains=q) | queryset.filter(first_name__icontains=q)
+        return queryset
+
 class TenantDetailView(LoginRequiredMixin, DetailView):
     model = Tenant
     template_name = 'rentals/tenants/tenant_detail.html'

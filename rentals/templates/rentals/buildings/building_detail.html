@@ -1,25 +1,86 @@
-{% extends "base.html" %}
-{% load static %}
+{% extends "rentals/base.html" %}
+
+{% block title %}{{ building.name }}{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>{{ building.name }}</h1>
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Building Details</h5>
-            <p><strong>Address:</strong> {{ building.address }}</p>
-            <p><strong>General Charges:</strong> ${{ building.total_general_charges }}</p>
-            <p><strong>Individual Meters:</strong> {% if building.has_individual_meters %}Yes{% else %}No{% endif %}</p>
-            <p><strong>Owner:</strong> {% if building.owner %}{{ building.owner }}{% else %}None{% endif %}</p>
-
-            <a href="{% url 'buildings:update' building.pk %}" class="btn btn-warning">Edit</a>
-            <a href="{% url 'buildings:delete' building.pk %}" class="btn btn-danger">Delete</a>
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        <h2>{{ building.name }}</h2>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h5 class="card-title">Building Information</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Address:</strong> {{ building.address }}</li>
+                    <li class="list-group-item"><strong>Owner:</strong> {% if building.owner %}{{ building.owner }}{% else %}None{% endif %}</li>
+                    <li class="list-group-item"><strong>General Charges:</strong> ${{ building.total_general_charges }}</li>
+                    <li class="list-group-item"><strong>Individual Meters:</strong> {% if building.has_individual_meters %}Yes{% else %}No{% endif %}</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h5 class="card-title">Statistics</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Total Properties:</strong> {{ building.properties.count }}</li>
+                    <li class="list-group-item"><strong>Available Properties:</strong> {{ building.properties.filter(is_available=True).count }}</li>
+                    <li class="list-group-item"><strong>Rented Properties:</strong> {{ building.properties.filter(is_available=False).count }}</li>
+                </ul>
+            </div>
         </div>
     </div>
+    <div class="card-footer">
+        <a href="{% url 'buildings:update' building.pk %}" class="btn btn-warning">
+            <i class="bi bi-pencil"></i> Edit
+        </a>
+        <a href="{% url 'buildings:delete' building.pk %}" class="btn btn-danger">
+            <i class="bi bi-trash"></i> Delete
+        </a>
+        <a href="{% url 'buildings:list' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+</div>
 
-    <h2 class="mt-4">Properties in this Building</h2>
-    <a href="{% url 'properties:create' %}?building={{ building.pk }}" class="btn btn-success mb-3">Add Property</a>
-    <table class="table">
+<!-- Charge Distribution -->
+<h3 class="mt-4">Charge Distribution</h3>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Property</th>
+                <th>Type</th>
+                <th>Unit</th>
+                <th>Distribution %</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for distribution in building.charge_distributions.all %}
+            <tr>
+                <td>{{ distribution.property }}</td>
+                <td>{{ distribution.property.get_property_type_display }}</td>
+                <td>{{ distribution.property.unit_number }}</td>
+                <td>{{ distribution.distribution_percentage }}%</td>
+                <td>
+                    <a href="{% url 'properties:detail' distribution.property.pk %}" class="btn btn-sm btn-info">View</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center">No charge distribution found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Properties in Building -->
+<h3 class="mt-4">Properties</h3>
+<a href="{% url 'properties:create' %}?building={{ building.pk }}" class="btn btn-success mb-3">
+    <i class="bi bi-plus-circle"></i> Add Property
+</a>
+<div class="table-responsive">
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th>Type</th>
@@ -31,20 +92,26 @@
             </tr>
         </thead>
         <tbody>
-            {% for property in properties %}
+            {% for property in building.properties.all %}
             <tr>
                 <td>{{ property.get_property_type_display }}</td>
                 <td>{{ property.unit_number }}</td>
                 <td>{{ property.size_m2 }}</td>
                 <td>${{ property.monthly_rent }}</td>
-                <td>{% if property.is_available %}Available{% else %}Rented{% endif %}</td>
+                <td>
+                    {% if property.is_available %}
+                        <span class="badge bg-success">Available</span>
+                    {% else %}
+                        <span class="badge bg-danger">Rented</span>
+                    {% endif %}
+                </td>
                 <td>
                     <a href="{% url 'properties:detail' property.pk %}" class="btn btn-sm btn-info">View</a>
                 </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="6">No properties found.</td>
+                <td colspan="6" class="text-center">No properties found.</td>
             </tr>
             {% endfor %}
         </tbody>

@@ -1,11 +1,11 @@
 {% extends "rentals/base.html" %}
 
-{% block title %}{% if object %}Update Owner{% else %}Create Owner{% endif %}{% endblock %}
+{% block title %}{% if object %}Update Tenant{% else %}Create Tenant{% endif %}{% endblock %}
 
 {% block content %}
 <div class="card">
     <div class="card-header bg-primary text-white">
-        <h2>{% if object %}Update Owner{% else %}Create New Owner{% endif %}</h2>
+        <h2>{% if object %}Update Tenant{% else %}Create New Tenant{% endif %}</h2>
     </div>
     <div class="card-body">
         <form method="post" enctype="multipart/form-data">
@@ -31,12 +31,13 @@
                 </div>
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label for="{{ form.address.id_for_label }}" class="form-label">Address</label>
-                        {{ form.address }}
+                        <label for="{{ form.id_document.id_for_label }}" class="form-label">ID Document</label>
+                        {{ form.id_document }}
+                        <div class="form-text">Upload a scan of the tenant's ID or passport (PDF/JPG).</div>
                     </div>
                     <div class="mb-3">
-                        <label for="{{ form.tax_number.id_for_label }}" class="form-label">Tax Number</label>
-                        {{ form.tax_number }}
+                        <label for="{{ form.emergency_contact.id_for_label }}" class="form-label">Emergency Contact</label>
+                        {{ form.emergency_contact }}
                     </div>
                     <div class="mb-3">
                         <label for="{{ form.notes.id_for_label }}" class="form-label">Notes</label>
@@ -48,7 +49,7 @@
                 <button type="submit" class="btn btn-primary me-md-2">
                     <i class="bi bi-save"></i> Save
                 </button>
-                <a href="{% url 'owners:list' %}" class="btn btn-secondary">
+                <a href="{% if object %}{% url 'tenants:detail' object.pk %}{% else %}{% url 'tenants:list' %}{% endif %}" class="btn btn-secondary">
                     <i class="bi bi-x-circle"></i> Cancel
                 </a>
             </div>

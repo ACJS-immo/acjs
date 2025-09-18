@@ -1,0 +1,118 @@
+{% extends "rentals/base.html" %}
+
+{% block title %}{{ owner.last_name }} {{ owner.first_name }}{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        <h2>{{ owner.last_name }} {{ owner.first_name }}</h2>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h5 class="card-title">Contact Information</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Email:</strong> {{ owner.email }}</li>
+                    <li class="list-group-item"><strong>Phone:</strong> {{ owner.phone|default:"--" }}</li>
+                    <li class="list-group-item"><strong>Address:</strong> {{ owner.address|default:"--" }}</li>
+                    <li class="list-group-item"><strong>Tax Number:</strong> {{ owner.tax_number|default:"--" }}</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h5 class="card-title">Portfolio</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Buildings:</strong> {{ owner.buildings.count }}</li>
+                    <li class="list-group-item"><strong>Properties:</strong> {{ owner.properties.count }}</li>
+                </ul>
+            </div>
+        </div>
+        <div class="mt-3">
+            <h5 class="card-title">Notes</h5>
+            <p class="card-text">{{ owner.notes|default:"No notes." }}</p>
+        </div>
+    </div>
+    <div class="card-footer">
+        <a href="{% url 'owners:update' owner.pk %}" class="btn btn-warning">
+            <i class="bi bi-pencil"></i> Edit
+        </a>
+        <a href="{% url 'owners:delete' owner.pk %}" class="btn btn-danger">
+            <i class="bi bi-trash"></i> Delete
+        </a>
+        <a href="{% url 'owners:list' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+</div>
+
+<!-- Liste des immeubles du propriétaire -->
+<h3 class="mt-4">Buildings Owned</h3>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Properties</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for building in owner.buildings.all %}
+            <tr>
+                <td>{{ building.name }}</td>
+                <td>{{ building.address }}</td>
+                <td>{{ building.properties.count }}</td>
+                <td>
+                    <a href="{% url 'buildings:detail' building.pk %}" class="btn btn-sm btn-info">View</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="text-center">No buildings found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Liste des biens du propriétaire -->
+<h3 class="mt-4">Properties Owned</h3>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Building</th>
+                <th>Type</th>
+                <th>Unit</th>
+                <th>Monthly Rent</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for property in owner.properties.all %}
+            <tr>
+                <td>{{ property.building.name }}</td>
+                <td>{{ property.get_property_type_display }}</td>
+                <td>{{ property.unit_number }}</td>
+                <td>${{ property.monthly_rent }}</td>
+                <td>
+                    {% if property.is_available %}
+                        <span class="badge bg-success">Available</span>
+                    {% else %}
+                        <span class="badge bg-danger">Rented</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'properties:detail' property.pk %}" class="btn btn-sm btn-info">View</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center">No properties found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

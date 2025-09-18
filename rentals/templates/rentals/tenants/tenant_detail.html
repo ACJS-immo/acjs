@@ -1,0 +1,129 @@
+{% extends "rentals/base.html" %}
+
+{% block title %}{{ tenant.last_name }} {{ tenant.first_name }}{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        <h2>{{ tenant.last_name }} {{ tenant.first_name }}</h2>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h5 class="card-title">Contact Information</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Email:</strong> {{ tenant.email }}</li>
+                    <li class="list-group-item"><strong>Phone:</strong> {{ tenant.phone|default:"--" }}</li>
+                    <li class="list-group-item"><strong>Emergency Contact:</strong> {{ tenant.emergency_contact|default:"--" }}</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h5 class="card-title">Lease Status</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Active Leases:</strong> {{ tenant.lease_contracts.filter(status='active').count }}</li>
+                    <li class="list-group-item"><strong>Total Leases:</strong> {{ tenant.lease_contracts.count }}</li>
+                </ul>
+            </div>
+        </div>
+        <div class="mt-3">
+            <h5 class="card-title">Notes</h5>
+            <p class="card-text">{{ tenant.notes|default:"No notes." }}</p>
+        </div>
+        {% if tenant.id_document %}
+        <div class="mt-3">
+            <h5 class="card-title">ID Document</h5>
+            <a href="{{ tenant.id_document.url }}" class="btn btn-info" target="_blank">
+                <i class="bi bi-file-earmark-pdf"></i> View Document
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    <div class="card-footer">
+        <a href="{% url 'tenants:update' tenant.pk %}" class="btn btn-warning">
+            <i class="bi bi-pencil"></i> Edit
+        </a>
+        <a href="{% url 'tenants:delete' tenant.pk %}" class="btn btn-danger">
+            <i class="bi bi-trash"></i> Delete
+        </a>
+        <a href="{% url 'tenants:list' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+</div>
+
+<!-- Active Leases -->
+{% if tenant.lease_contracts.filter(status='active').exists %}
+<h3 class="mt-4">Active Leases</h3>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Property</th>
+                <th>Type</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Monthly Amount</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for lease in tenant.lease_contracts.filter(status='active') %}
+            <tr>
+                <td>{{ lease.property }}</td>
+                <td>{{ lease.get_lease_type_display }}</td>
+                <td>{{ lease.start_date|date:"Y-m-d" }}</td>
+                <td>{{ lease.end_date|date:"Y-m-d"|default:"--" }}</td>
+                <td>${{ lease.total_monthly_amount }}</td>
+                <td>
+                    <a href="{% url 'leases:detail' lease.pk %}" class="btn btn-sm btn-info">View</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+<!-- Lease History -->
+<h3 class="mt-4">Lease History</h3>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Property</th>
+                <th>Type</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for lease in tenant.lease_contracts.all %}
+            <tr>
+                <td>{{ lease.property }}</td>
+                <td>{{ lease.get_lease_type_display }}</td>
+                <td>{{ lease.start_date|date:"Y-m-d" }}</td>
+                <td>{{ lease.end_date|date:"Y-m-d"|default:"--" }}</td>
+                <td>
+                    <span class="badge
+                        {% if lease.status == 'active' %}bg-success
+                        {% elif lease.status == 'terminated' %}bg-secondary
+                        {% elif lease.status == 'cancelled' %}bg-danger
+                        {% else %}bg-info{% endif %}">
+                        {{ lease.get_status_display }}
+                    </span>
+                </td>
+                <td>
+                    <a href="{% url 'leases:detail' lease.pk %}" class="btn btn-sm btn-info">View</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center">No lease history.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends "rentals/base.html" %}
+
+{% block title %}Lease #{{ lease.id }}{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        <h2>Lease Contract #{{ lease.id }}</h2>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h5 class="card-title">Property Information</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Building:</strong> {{ lease.property.building.name }}</li>
+                    <li class="list-group-item"><strong>Property:</strong> {{ lease.property.get_property_type_display }} {{ lease.property.unit_number }}</li>
+                    <li class="list-group-item"><strong>Address:</strong> {{ lease.property.building.address }}</li>
+                    <li class="list-group-item"><strong>Owner:</strong> {% if lease.property.current_owner %}{{ lease.property.current_owner }}{% else %}None{% endif %}</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h5 class="card-title">Tenant Information</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Name:</strong> {{ lease.tenant.last_name }} {{ lease.tenant.first_name }}</li>
+                    <li class="list-group-item"><strong>Email:</strong> {{ lease.tenant.email }}</li>
+                    <li class="list-group-item"><strong>Phone:</strong> {{ lease.tenant.phone|default:"--" }}</li>
+                </ul>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <h5 class="card-title">Lease Details</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Type:</strong> {{ lease.get_lease_type_display }}</li>
+                    <li class="list-group-item"><strong>Start Date:</strong> {{ lease.start_date|date:"Y-m-d" }}</li>
+                    <li class="list-group-item"><strong>End Date:</strong> {{ lease.end_date|date:"Y-m-d"|default:"--" }}</li>
+                    <li class="list-group-item"><strong>Status:</strong>
+                        <span class="badge
+                            {% if lease.status == 'active' %}bg-success
+                            {% elif lease.status == 'terminated' %}bg-secondary
+                            {% elif lease.status == 'cancelled' %}bg-danger
+                            {% else %}bg-info{% endif %}">
+                            {{ lease.get_status_display }}
+                        </span>
+                    </li>
+                    {% if lease.lease_type == 'colocation' %}
+                    <li class="list-group-item"><strong>Solidarity Clause:</strong>
+                        {% if lease.has_solidarity_clause %}Yes{% else %}No{% endif %}
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h5 class="card-title">Financial Details</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Monthly Rent:</strong> ${{ lease.property.monthly_rent }}</li>
+                    <li class="list-group-item"><strong>Charges:</strong>
+                        {% if lease.lease_type == 'colocation' %}
+                            ${{ lease.flat_rate_charges }} (flat rate)
+                        {% else %}
+                            ${{ lease.property.specific_charges }} (specific)
+                        {% endif %}
+                    </li>
+                    <li class="list-group-item"><strong>Total Monthly Amount:</strong> ${{ lease.total_monthly_amount }}</li>
+                    <li class="list-group-item"><strong>Deposit Amount:</strong> ${{ lease.deposit_amount }}</li>
+                </ul>
+            </div>
+        </div>
+        {% if lease.contract_document %}
+        <div class="mt-3">
+            <h5 class="card-title">Contract Document</h5>
+            <a href="{{ lease.contract_document.url }}" class="btn btn-info" target="_blank">
+                <i class="bi bi-file-earmark-pdf"></i> View Contract
+            </a>
+        </div>
+        {% endif %}
+        {% if lease.notes %}
+        <div class="mt-3">
+            <h5 class="card-title">Notes</h5>
+            <p class="card-text">{{ lease.notes }}</p>
+        </div>
+        {% endif %}
+    </div>
+    <div class="card-footer">
+        <a href="{% url 'leases:update' lease.pk %}" class="btn btn-warning">
+            <i class="bi bi-pencil"></i> Edit
+        </a>
+        <a href="{% url 'leases:delete' lease.pk %}" class="btn btn-danger">
+            <i class="bi bi-trash"></i> Delete
+        </a>
+        <a href="{% url 'leases:list' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+</div>
+{% endblock %}

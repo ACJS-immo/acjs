@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'study',
     'rentals',
+    'rentals.apps.RentalsConfig',  # Utilise la classe RentalsConfig pour activer ready()
 ]
 
 MIDDLEWARE = [

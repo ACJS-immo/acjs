@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h1>Lease Contracts</h1>
+<link rel="stylesheet" href="{% static 'locations/css/styles.css' %}">
+
+<table class="lease-table">
+    <thead>
+        <tr>
+            <th>Property</th>
+            <th>Tenant</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Monthly Rent</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for contract in contracts %}
+        <tr>
+            <td>{{ contract.property.address }}</td>
+            <td>{{ contract.tenant.first_name }} {{ contract.tenant.last_name }}</td>
+            <td>{{ contract.start_date|date:"Y-m-d" }}</td>
+            <td>{{ contract.end_date|date:"Y-m-d"|default:"---" }}</td>
+            <td>${{ contract.total_monthly_amount }}</td>
+            <td>
+                <span class="status-badge status-{{ contract.status }}">{{ contract.get_status_display }}</span>
+            </td>
+            <td>
+                <a href="{% url 'locations:lease_detail' contract.id %}" class="btn-details">Details</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

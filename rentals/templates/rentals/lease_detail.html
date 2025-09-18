@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="lease-detail-container">
+    <h1>Lease Contract #{{ contract.id }}</h1>
+    <link rel="stylesheet" href="{% static 'locations/css/styles.css' %}">
+
+    <div class="lease-header">
+        <div class="property-info">
+            <h2>{{ contract.property.address }}</h2>
+            <p>Type: {{ contract.property.get_property_type_display }}</p>
+        </div>
+        <div class="tenant-info">
+            <h2>{{ contract.tenant.first_name }} {{ contract.tenant.last_name }}</h2>
+            <p>Email: {{ contract.tenant.email }}</p>
+            <p>Phone: {{ contract.tenant.phone|default:"---" }}</p>
+        </div>
+    </div>
+
+    <div class="lease-details">
+        <div class="detail-row">
+            <span class="detail-label">Start Date:</span>
+            <span class="detail-value">{{ contract.start_date|date:"Y-m-d" }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">End Date:</span>
+            <span class="detail-value">{{ contract.end_date|date:"Y-m-d"|default:"---" }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Monthly Rent:</span>
+            <span class="detail-value">${{ contract.monthly_rent }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Monthly Charges:</span>
+            <span class="detail-value">${{ contract.monthly_charges }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Total Monthly:</span>
+            <span class="detail-value">${{ contract.total_monthly_amount }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Status:</span>
+            <span class="detail-value status-{{ contract.status }}">{{ contract.get_status_display }}</span>
+        </div>
+    </div>
+
+    {% if contract.contract_document %}
+    <div class="contract-document">
+        <a href="{{ contract.contract_document.url }}" target="_blank" class="btn-download">
+            Download Contract Document
+        </a>
+    </div>
+    {% endif %}
+
+    <a href="{% url 'locations:lease_list' %}" class="btn-back">Back to List</a>
+</div>
+{% endblock %}

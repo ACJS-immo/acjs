@@ -37,7 +37,7 @@ class TenantAdmin(admin.ModelAdmin):
 class LeaseContractAdmin(admin.ModelAdmin):
     list_display = ('property', 'tenant', 'start_date', 'end_date', 'status', 'total_monthly_amount')
     search_fields = ('property__unit_number', 'tenant__last_name', 'tenant__first_name')
-    list_filter = ('status', 'lease_type', 'start_date', 'property__building')
+    list_filter = ('status', 'lease_type', 'start_date', 'property__building__name')
 
     def total_monthly_amount(self, obj):
         return obj.total_monthly_amount()

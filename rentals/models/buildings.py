@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.urls import reverse
 from django.utils import timezone
 from .owners import Owner
 
@@ -46,7 +47,7 @@ class ChargeDistribution(models.Model):
         related_name='charge_distributions'
     )
     property = models.ForeignKey(
-        'properties.Property',  # Référence circulaire résolue via string
+        'Property',  # Référence circulaire résolue via string
         on_delete=models.CASCADE,
         related_name='charge_distributions'
     )

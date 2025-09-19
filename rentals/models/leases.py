@@ -9,12 +9,12 @@ class LeaseType(models.TextChoices):
 
 class LeaseContract(models.Model):
     property = models.ForeignKey(
-        'properties.Property',  # Référence circulaire résolue via string
+        'Property',  # Référence circulaire résolue via string
         on_delete=models.CASCADE,
         related_name='lease_contracts'
     )
     tenant = models.ForeignKey(
-        'tenants.Tenant',  # Référence circulaire
+        'Tenant',  # Référence circulaire
         on_delete=models.CASCADE,
         related_name='lease_contracts'
     )

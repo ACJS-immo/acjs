@@ -4,7 +4,7 @@
 
 {% block content %}
 <h1 class="mb-4">Owners</h1>
-<a href="{% url 'owners:create' %}" class="btn btn-primary mb-3">
+<a href="{% url 'rentals:owners_create' %}" class="btn btn-primary mb-3">
     <i class="bi bi-plus-circle"></i> Add Owner
 </a>
 
@@ -31,10 +31,10 @@
                 <td>{{ owner.buildings.count }}</td>
                 <td>{{ owner.properties.count }}</td>
                 <td>
-                    <a href="{% url 'owners:detail' owner.pk %}" class="btn btn-sm btn-info">
+                    <a href="{% url 'rentals:owners_detail' owner.pk %}" class="btn btn-sm btn-info">
                         <i class="bi bi-eye"></i> View
                     </a>
-                    <a href="{% url 'owners:update' owner.pk %}" class="btn btn-sm btn-warning">
+                    <a href="{% url 'rentals:owners_update' owner.pk %}" class="btn btn-sm btn-warning">
                         <i class="bi bi-pencil"></i> Edit
                     </a>
                 </td>

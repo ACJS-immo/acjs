@@ -48,13 +48,13 @@
         </div>
     </div>
     <div class="card-footer">
-        <a href="{% url 'properties:update' property.pk %}" class="btn btn-warning">
+        <a href="{% url 'rentals:properties_update' property.pk %}" class="btn btn-warning">
             <i class="bi bi-pencil"></i> Edit
         </a>
-        <a href="{% url 'properties:delete' property.pk %}" class="btn btn-danger">
+        <a href="{% url 'rentals:properties_delete' property.pk %}" class="btn btn-danger">
             <i class="bi bi-trash"></i> Delete
         </a>
-        <a href="{% url 'properties:list' %}" class="btn btn-secondary">
+        <a href="{% url 'rentals:properties_list' %}" class="btn btn-secondary">
             <i class="bi bi-arrow-left"></i> Back to List
         </a>
     </div>

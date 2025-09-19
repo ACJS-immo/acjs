@@ -82,13 +82,13 @@
         {% endif %}
     </div>
     <div class="card-footer">
-        <a href="{% url 'leases:update' lease.pk %}" class="btn btn-warning">
+        <a href="{% url 'rentals:leases_update' lease.pk %}" class="btn btn-warning">
             <i class="bi bi-pencil"></i> Edit
         </a>
-        <a href="{% url 'leases:delete' lease.pk %}" class="btn btn-danger">
+        <a href="{% url 'rentals:leases_delete' lease.pk %}" class="btn btn-danger">
             <i class="bi bi-trash"></i> Delete
         </a>
-        <a href="{% url 'leases:list' %}" class="btn btn-secondary">
+        <a href="{% url 'rentals:leases_list' %}" class="btn btn-secondary">
             <i class="bi bi-arrow-left"></i> Back to List
         </a>
     </div>

@@ -4,7 +4,7 @@
 
 {% block content %}
 <h1 class="mb-4">Buildings</h1>
-<a href="{% url 'buildings:create' %}" class="btn btn-primary mb-3">
+<a href="{% url 'rentals:buildings_create' %}" class="btn btn-primary mb-3">
     <i class="bi bi-plus-circle"></i> Add Building
 </a>
 
@@ -31,10 +31,10 @@
                 <td>{% if building.has_individual_meters %}Yes{% else %}No{% endif %}</td>
                 <td>{{ building.properties.count }}</td>
                 <td>
-                    <a href="{% url 'buildings:detail' building.pk %}" class="btn btn-sm btn-info">
+                    <a href="{% url 'rentals:buildings_detail' building.pk %}" class="btn btn-sm btn-info">
                         <i class="bi bi-eye"></i> View
                     </a>
-                    <a href="{% url 'buildings:update' building.pk %}" class="btn btn-sm btn-warning">
+                    <a href="{% url 'rentals:buildings_update' building.pk %}" class="btn btn-sm btn-warning">
                         <i class="bi bi-pencil"></i> Edit
                     </a>
                 </td>

@@ -32,13 +32,13 @@
         </div>
     </div>
     <div class="card-footer">
-        <a href="{% url 'owners:update' owner.pk %}" class="btn btn-warning">
+        <a href="{% url 'rentals:owners_update' owner.pk %}" class="btn btn-warning">
             <i class="bi bi-pencil"></i> Edit
         </a>
-        <a href="{% url 'owners:delete' owner.pk %}" class="btn btn-danger">
+        <a href="{% url 'rentals:owners_delete' owner.pk %}" class="btn btn-danger">
             <i class="bi bi-trash"></i> Delete
         </a>
-        <a href="{% url 'owners:list' %}" class="btn btn-secondary">
+        <a href="{% url 'rentals:owners_list' %}" class="btn btn-secondary">
             <i class="bi bi-arrow-left"></i> Back to List
         </a>
     </div>
@@ -104,7 +104,7 @@
                     {% endif %}
                 </td>
                 <td>
-                    <a href="{% url 'properties:detail' property.pk %}" class="btn btn-sm btn-info">View</a>
+                    <a href="{% url 'rentals:properties_detail' property.pk %}" class="btn btn-sm btn-info">View</a>
                 </td>
             </tr>
             {% empty %}

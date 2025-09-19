@@ -4,3 +4,4 @@ from .buildings import *
 from .properties import *
 from .tenants import *
 from .leases import *
+from .home import *

@@ -18,6 +18,8 @@
                 <th>General Charges</th>
                 <th>Individual Meters</th>
                 <th>Properties</th>
+                <th>Rented Properties</th>
+                <th>Available Properties</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -29,7 +31,9 @@
                 <td>{% if building.owner %}{{ building.owner }}{% else %}None{% endif %}</td>
                 <td>${{ building.total_general_charges }}</td>
                 <td>{% if building.has_individual_meters %}Yes{% else %}No{% endif %}</td>
-                <td>{{ building.properties.count }}</td>
+                <td>{{ building.total_properties_count }}</td>
+                <td>{{ building.rented_properties_count }}</td>
+                <td>{{ building.available_properties_count }}</td>
                 <td>
                     <a href="{% url 'rentals:buildings_detail' building.pk %}" class="btn btn-sm btn-info">
                         <i class="bi bi-eye"></i> View

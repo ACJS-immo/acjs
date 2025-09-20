@@ -37,7 +37,22 @@ class Building(models.Model):
         return f"{self.name} ({self.address})"
 
     def get_absolute_url(self):
-        return reverse('buildings:detail', args=[str(self.id)])
+        return reverse('rentals:buildings_detail', args=[str(self.id)])
+
+    @property
+    def available_properties_count(self):
+        """Retourne le nombre de propriétés disponibles dans cet immeuble."""
+        return self.properties.filter(is_available=True).count()
+
+    @property
+    def total_properties_count(self):
+        """Retourne le nombre total de propriétés dans cet immeuble."""
+        return self.properties.count()
+
+    @property
+    def rented_properties_count(self):
+        """Retourne le nombre de propriétés louées dans cet immeuble."""
+        return self.properties.filter(is_available=False).count()
 
 class ChargeDistribution(models.Model):
     """Tracks how general building charges are distributed among properties."""

@@ -61,7 +61,7 @@ class Property(models.Model):
         return f"{self.get_property_type_display()} {self.unit_number} ({self.building.name})"
 
     def get_absolute_url(self):
-        return reverse('properties:detail', args=[str(self.id)])
+        return reverse('rentals:properties_detail', args=[str(self.id)])
 
     def total_monthly_cost(self):
         """Returns total monthly cost (rent + specific charges)."""
@@ -70,3 +70,24 @@ class Property(models.Model):
     def current_owner(self):
         """Returns the effective owner (property owner or building owner)."""
         return self.owner if self.owner else self.building.owner
+
+    @property
+    def active_leases(self):
+        """Retourne une liste des baux actifs pour cette propriété.
+
+           Utilise les données préchargées si disponibles (via prefetch_related),
+           sinon effectue une requête en base de données.
+
+           Returns:
+               QuerySet: Liste des baux actifs.
+           """
+        if hasattr(self, 'prefetched_leases'):  # Si les données sont préchargées
+            return [lease for lease in self.prefetched_leases if lease.status == 'active']
+        return self.lease_contracts.filter(status='active')
+
+    @property
+    def has_active_lease(self):
+        """Retourne True si cette propriété a un bail actif."""
+        if hasattr(self, 'prefetched_leases'):
+            return any(lease.status == 'active' for lease in self.prefetched_leases)
+        return self.lease_contracts.filter(status='active').exists()

@@ -1,7 +1,7 @@
 # Importe toutes les vues pour les URLs
 from .owners import *
 from .buildings import *
-from .properties import *
+from .real_estate_units import *
 from .tenants import *
 from .leases import *
 from .home import *

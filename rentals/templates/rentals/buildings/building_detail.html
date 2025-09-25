@@ -13,16 +13,24 @@
                 <h5 class="card-title">Building Information</h5>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item"><strong>Address:</strong> {{ building.address }}</li>
-                    <li class="list-group-item"><strong>Owner:</strong> {% if building.owner %}{{ building.owner }}{% else %}None{% endif %}</li>
-                    <li class="list-group-item"><strong>General Charges:</strong> ${{ building.total_general_charges }}</li>
+                    <li class="list-group-item"><strong>Owner:</strong> {% if building.owner %}{{ building.owner }}{%
+                        else %}None{% endif %}
+                    </li>
+                    <li class="list-group-item"><strong>General Charges:</strong> ${{ building.total_general_charges }}
+                    </li>
                 </ul>
             </div>
             <div class="col-md-6">
                 <h5 class="card-title">Statistics</h5>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item"><strong>Total Properties:</strong> {{ building.total_properties_count }}</li>
-                    <li class="list-group-item"><strong>Available Properties:</strong> {{ building.available_properties_count }}</li>
-                    <li class="list-group-item"><strong>Occupancy Rate:</strong> {{ building.occupancy_rate|floatformat:1 }}%</li>
+                    <li class="list-group-item"><strong>Total Properties:</strong> {{ building.total_properties_count }}
+                    </li>
+                    <li class="list-group-item"><strong>Available Properties:</strong> {{
+                        building.available_properties_count }}
+                    </li>
+                    <li class="list-group-item"><strong>Occupancy Rate:</strong> {{
+                        building.occupancy_rate|floatformat:1 }}%
+                    </li>
                 </ul>
             </div>
         </div>
@@ -34,38 +42,39 @@
 <div class="table-responsive">
     <table class="table table-striped">
         <thead>
-            <tr>
-                <th>Type</th>
-                <th>Unit</th>
-                <th>Size (m²)</th>
-                <th>Monthly Rent</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
+        <tr>
+            <th>Type</th>
+            <th>Unit</th>
+            <th>Size (m²)</th>
+            <th>Monthly Rent</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
         </thead>
         <tbody>
-            {% for property in building.prefetched_properties %}
-            <tr>
-                <td>{{ property.get_property_type_display }}</td>
-                <td>{{ property.unit_number }}</td>
-                <td>{{ property.size_m2 }}</td>
-                <td>${{ property.monthly_rent }}</td>
-                <td>
-                    {% if property.is_available %}
-                        <span class="badge bg-success">Available</span>
-                    {% else %}
-                        <span class="badge bg-danger">Rented</span>
-                    {% endif %}
-                </td>
-                <td>
-                    <a href="{% url 'rentals:properties_detail' property.pk %}" class="btn btn-sm btn-info">View</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="6" class="text-center">No properties found.</td>
-            </tr>
-            {% endfor %}
+        {% for real_estate_unit in building.prefetched_real_estate_units %}  <!-- ✅ Mis à jour -->
+        <tr>
+            <td>{{ real_estate_unit.get_unit_type_display }}</td>  <!-- ✅ Mis à jour -->
+
+            <td>{{ real_estate_unit.unit_number }}</td>
+            <td>{{ real_estate_unit.size_m2 }}</td>
+            <td>${{ real_estate_unit.monthly_rent }}</td>
+            <td>
+                {% if real_estate_unit.is_available %}
+                <span class="badge bg-success">Available</span>
+                {% else %}
+                <span class="badge bg-danger">Rented</span>
+                {% endif %}
+            </td>
+            <td>
+                <a href="{% url 'rentals:real_estate_units_detail' real_estate_unit.pk %}" class="btn btn-sm btn-info">View</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6" class="text-center">No properties found.</td>
+        </tr>
+        {% endfor %}
         </tbody>
     </table>
 </div>

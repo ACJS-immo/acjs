@@ -13,7 +13,7 @@ class OwnerDetailView(DetailView):
     def get_queryset(self):
         return Owner.objects.prefetch_related(
             Prefetch('buildings', queryset=Building.objects.all(), to_attr='prefetched_buildings'),
-            Prefetch('properties', queryset=Property.objects.all(), to_attr='prefetched_properties')
+            Prefetch('real_estate_units', queryset=Property.objects.all(), to_attr='prefetched_properties')
         )
 
 class OwnerListView(ListView):

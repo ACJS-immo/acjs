@@ -8,9 +8,9 @@ class LeaseType(models.TextChoices):
     COLOCATION = 'colocation', _("Colocation (Shared Accommodation)")
 
 class LeaseContract(models.Model):
-    property = models.ForeignKey(
-        'Property', on_delete=models.CASCADE,
-        related_name='lease_contracts', verbose_name=_("Property")
+    real_estate_unit = models.ForeignKey(
+        'RealEstateUnit', on_delete=models.CASCADE,
+        related_name='lease_contracts', verbose_name=_("Real Estate Unit")
     )
     tenant = models.ForeignKey(
         'Tenant', on_delete=models.CASCADE,
@@ -59,14 +59,14 @@ class LeaseContract(models.Model):
         ordering = ['-start_date']
 
     def __str__(self):
-        return f"Lease {self.id} - {self.property} ({self.tenant})"
+        return f"Lease {self.id} - {self.real_estate_unit} ({self.tenant})"
 
     @property
     def total_monthly_amount(self):
         """Calcule le montant mensuel total en fonction du type de bail."""
         if self.lease_type == LeaseType.COLOCATION and self.flat_rate_charges > 0:
-            return self.property.monthly_rent + self.flat_rate_charges
-        return self.property.total_monthly_cost
+            return self.real_estate_unit.monthly_rent + self.flat_rate_charges
+        return self.real_estate_unit.total_monthly_cost
 
     @property
     def is_active(self):

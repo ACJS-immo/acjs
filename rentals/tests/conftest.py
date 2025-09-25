@@ -1,8 +1,9 @@
+from datetime import date, timedelta
+
 import pytest
 from django.conf import settings
 
-from rentals.models import Owner, Building, Property, Tenant, LeaseContract
-from datetime import date, timedelta
+from rentals.models import Owner, Building, Tenant, LeaseContract, RealEstateUnit
 
 
 def pytest_configure():
@@ -13,10 +14,12 @@ def pytest_configure():
             }
         }
 
+
 @pytest.fixture(autouse=True)
 def enable_db_access_for_all_tests(db):
     """Active l'accès à la base de données pour tous les tests."""
     pass
+
 
 @pytest.fixture
 def owner():
@@ -29,8 +32,8 @@ def building(owner):
 
 
 @pytest.fixture
-def property(building):
-    return Property.objects.create(
+def real_estate_unit(building):
+    return RealEstateUnit.objects.create(
         building=building,
         property_type='apartment',
         unit_number="A1",
@@ -47,9 +50,9 @@ def tenant():
 
 
 @pytest.fixture
-def active_lease(property, tenant):
+def active_lease(real_estate_unit, tenant):
     return LeaseContract.objects.create(
-        property=property,
+        real_estate_unit=real_estate_unit,
         tenant=tenant,
         lease_type='standard',
         start_date=date.today(),

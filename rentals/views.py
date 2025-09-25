@@ -48,7 +48,7 @@ class BuildingDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['properties'] = self.object.properties.all()
+        context['real_estate_units'] = self.object.properties.all()
         return context
 
 class BuildingCreateView(LoginRequiredMixin, CreateView):
@@ -74,13 +74,13 @@ from .models import Property
 
 class PropertyListView(LoginRequiredMixin, ListView):
     model = Property
-    template_name = 'properties/property_list.html'
-    context_object_name = 'properties'
+    template_name = 'real_estate_units/real_estate_units_list.html'
+    context_object_name = 'real_estate_units'
     paginate_by = 10
 
 class PropertyDetailView(LoginRequiredMixin, DetailView):
     model = Property
-    template_name = 'properties/property_detail.html'
+    template_name = 'real_estate_units/real_estate_units_detail.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -89,28 +89,28 @@ class PropertyDetailView(LoginRequiredMixin, DetailView):
 
 class PropertyCreateView(LoginRequiredMixin, CreateView):
     model = Property
-    template_name = 'properties/property_form.html'
+    template_name = 'real_estate_units/real_estate_units_form.html'
     fields = [
         'building', 'owner', 'property_type', 'unit_number',
         'size_m2', 'monthly_rent', 'specific_charges', 'is_available', 'description'
     ]
-    success_url = reverse_lazy('properties:list')
+    success_url = reverse_lazy('real_estate_units:list')
 
 class PropertyUpdateView(LoginRequiredMixin, UpdateView):
     model = Property
-    template_name = 'properties/property_form.html'
+    template_name = 'real_estate_units/real_estate_units_form.html'
     fields = [
         'building', 'owner', 'property_type', 'unit_number',
         'size_m2', 'monthly_rent', 'specific_charges', 'is_available', 'description'
     ]
 
     def get_success_url(self):
-        return reverse('properties:detail', kwargs={'pk': self.object.pk})
+        return reverse('real_estate_units:detail', kwargs={'pk': self.object.pk})
 
 class PropertyDeleteView(LoginRequiredMixin, DeleteView):
     model = Property
-    template_name = 'properties/property_confirm_delete.html'
-    success_url = reverse_lazy('properties:list')
+    template_name = 'real_estate_units/real_estate_units_confirm_delete.html'
+    success_url = reverse_lazy('real_estate_units:list')
 
 from .models import Tenant
 
@@ -174,7 +174,7 @@ class LeaseCreateView(LoginRequiredMixin, CreateView):
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
-        # Filter properties to only available ones
+        # Filter real_estate_units to only available ones
         form.fields['property'].queryset = Property.objects.filter(is_available=True)
         return form
 

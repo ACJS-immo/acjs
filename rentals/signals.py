@@ -7,7 +7,7 @@ from django.conf import settings
 
 from .models import Owner
 from .models.leases import LeaseContract
-from .models.properties import Property
+from .models.real_estate_units import RealEstateUnit
 
 @receiver(post_save, sender=LeaseContract)
 def update_property_availability_on_lease_save(sender, instance, created, **kwargs):

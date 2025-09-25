@@ -1,7 +1,7 @@
 from django.contrib import admin
 from rentals.models.owners import Owner
 from rentals.models.buildings import Building, ChargeDistribution
-from rentals.models.properties import Property
+from rentals.models.real_estate_units import RealEstateUnit
 from rentals.models.tenants import Tenant
 from rentals.models.leases import LeaseContract
 
@@ -17,11 +17,11 @@ class BuildingAdmin(admin.ModelAdmin):
     search_fields = ('name', 'address')
     list_filter = ('has_individual_meters', 'owner')
 
-@admin.register(Property)
-class PropertyAdmin(admin.ModelAdmin):
-    list_display = ('building', 'property_type', 'unit_number', 'size_m2', 'monthly_rent', 'is_available', 'current_owner')
+@admin.register(RealEstateUnit)
+class RealEstateUnitAdmin(admin.ModelAdmin):
+    list_display = ('building', 'unit_type', 'unit_number', 'size_m2', 'monthly_rent', 'is_available', 'current_owner')
     search_fields = ('building__name', 'unit_number')
-    list_filter = ('property_type', 'is_available', 'building')
+    list_filter = ('unit_type', 'is_available', 'building')
 
     def current_owner(self, obj):
         return obj.current_owner()
@@ -35,9 +35,9 @@ class TenantAdmin(admin.ModelAdmin):
 
 @admin.register(LeaseContract)
 class LeaseContractAdmin(admin.ModelAdmin):
-    list_display = ('property', 'tenant', 'start_date', 'end_date', 'status', 'total_monthly_amount')
-    search_fields = ('property__unit_number', 'tenant__last_name', 'tenant__first_name')
-    list_filter = ('status', 'lease_type', 'start_date', 'property__building__name')
+    list_display = ('real_estate_unit', 'tenant', 'start_date', 'end_date', 'status', 'total_monthly_amount')
+    search_fields = ('real_estate_unit__unit_number', 'tenant__last_name', 'tenant__first_name')
+    list_filter = ('status', 'lease_type', 'start_date', 'real_estate_unit__building__name')
 
     def total_monthly_amount(self, obj):
         return obj.total_monthly_amount()
@@ -45,6 +45,6 @@ class LeaseContractAdmin(admin.ModelAdmin):
 
 @admin.register(ChargeDistribution)
 class ChargeDistributionAdmin(admin.ModelAdmin):
-    list_display = ('building', 'property', 'distribution_percentage', 'start_date', 'end_date')
-    search_fields = ('building__name', 'property__unit_number')
+    list_display = ('building', 'real_estate_unit', 'distribution_percentage', 'start_date', 'end_date')
+    search_fields = ('building__name', 'real_estate_unit__unit_number')
     list_filter = ('building', 'start_date')

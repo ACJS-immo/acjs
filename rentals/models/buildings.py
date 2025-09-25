@@ -33,52 +33,46 @@ class Building(models.Model):
         return f"{self.name} ({self.address})"
 
     @property
-    def available_properties(self):
-        """Retourne les propriétés disponibles dans cet immeuble."""
-        if hasattr(self, 'prefetched_properties'):
-            return [p for p in self.prefetched_properties if p.is_available]
-        return self.properties.filter(is_available=True)
+    def available_real_estate_units(self):  # ✅ Renommé
+        """Retourne les unités disponibles dans cet immeuble."""
+        if hasattr(self, 'prefetched_real_estate_units'):  # ✅ Renommé
+            return [unit for unit in self.prefetched_real_estate_units if unit.is_available]
+        return self.real_estate_units.filter(is_available=True)  # ✅ Renommé
 
     @property
-    def available_properties_count(self):
-        """Retourne le nombre de propriétés disponibles."""
-        if hasattr(self, 'prefetched_properties'):
-            return len([p for p in self.prefetched_properties if p.is_available])
-        return self.properties.filter(is_available=True).count()
+    def available_real_estate_units_count(self):  # ✅ Renommé
+        """Retourne le nombre d'unités disponibles."""
+        if hasattr(self, 'prefetched_real_estate_units'):
+            return len([unit for unit in self.prefetched_real_estate_units if unit.is_available])
+        return self.real_estate_units.filter(is_available=True).count()  # ✅ Renommé
 
     @property
-    def rented_properties_count(self):
-        """Retourne le nombre de propriétés louées."""
-        if hasattr(self, 'prefetched_properties'):
-            return len([p for p in self.prefetched_properties if not p.is_available])
-        return self.properties.filter(is_available=False).count()
+    def rented_real_estate_units_count(self):  # ✅ Renommé
+        """Retourne le nombre d'unités louées."""
+        if hasattr(self, 'prefetched_real_estate_units'):
+            return len([unit for unit in self.prefetched_real_estate_units if not unit.is_available])
+        return self.real_estate_units.filter(is_available=False).count()  # ✅ Renommé
 
     @property
-    def total_properties_count(self):
-        """Retourne le nombre total de propriétés."""
-        if hasattr(self, 'prefetched_properties'):
-            return len(self.prefetched_properties)
-        return self.properties.count()
-
-    @property
-    def occupancy_rate(self):
-        """Retourne le taux d'occupation de l'immeuble (0-100)."""
-        total = self.total_properties_count
-        return (self.rented_properties_count / total * 100) if total > 0 else 0
+    def total_real_estate_units_count(self):  # ✅ Renommé
+        """Retourne le nombre total d'unités."""
+        if hasattr(self, 'prefetched_real_estate_units'):
+            return len(self.prefetched_real_estate_units)
+        return self.real_estate_units.count()  # ✅ Renommé
 
     def get_absolute_url(self):
         return reverse('rentals:buildings_detail', args=[str(self.id)])
 
 
 class ChargeDistribution(models.Model):
-    """Tracks how general building charges are distributed among properties."""
+    """Tracks how general building charges are distributed among real_estate_units."""
     building = models.ForeignKey(
         Building,
         on_delete=models.CASCADE,
         related_name='charge_distributions'
         )
-    property = models.ForeignKey(
-        'Property',  # Référence circulaire résolue via string
+    real_estate_unit = models.ForeignKey(
+        'RealEstateUnit',  # Référence circulaire résolue via string
         on_delete=models.CASCADE,
         related_name='charge_distributions'
         )
@@ -95,8 +89,8 @@ class ChargeDistribution(models.Model):
     class Meta:
         verbose_name = "Charge Distribution"
         verbose_name_plural = "Charge Distributions"
-        unique_together = [['building', 'property', 'start_date']]
+        unique_together = [['building', 'real_estate_unit', 'start_date']]
 
 
     def __str__(self):
-        return f"{self.property} - {self.distribution_percentage}% of {self.building.name}'s charges"
+        return f"{self.real_estate_unit} - {self.distribution_percentage}% of {self.building.name}'s charges"

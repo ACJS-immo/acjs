@@ -5,7 +5,7 @@ from django.urls import reverse
 
 # ========== OWNER MODEL ==========
 class Owner(models.Model):
-    """Represents a property owner (can own multiple properties)."""
+    """Represents a property owner (can own multiple real_estate_units)."""
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     email = models.EmailField(
@@ -34,7 +34,7 @@ class Owner(models.Model):
 
 # ========== BUILDING MODEL ==========
 class Building(models.Model):
-    """Represents a physical building containing rentable properties."""
+    """Represents a physical building containing rentable real_estate_units."""
     name = models.CharField(max_length=200)
     address = models.TextField()
     total_general_charges = models.DecimalField(
@@ -79,14 +79,14 @@ class Property(models.Model):
     building = models.ForeignKey(
         Building,
         on_delete=models.CASCADE,
-        related_name='properties'
+        related_name='real_estate_units'
     )
     owner = models.ForeignKey(
         Owner,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='properties',
+        related_name='real_estate_units',
         help_text="Owner of this specific property (defaults to building owner)."
     )
     property_type = models.CharField(
@@ -126,7 +126,7 @@ class Property(models.Model):
         return f"{self.get_property_type_display()} {self.unit_number} ({self.building.name})"
 
     def get_absolute_url(self):
-        return reverse('properties:detail', args=[str(self.id)])
+        return reverse('real_estate_units:detail', args=[str(self.id)])
 
     def total_monthly_cost(self):
         """Returns total monthly cost (rent + specific charges)."""
@@ -250,7 +250,7 @@ class LeaseContract(models.Model):
 
 # ========== CHARGE DISTRIBUTION ==========
 class ChargeDistribution(models.Model):
-    """Tracks how general building charges are distributed among properties."""
+    """Tracks how general building charges are distributed among real_estate_units."""
     building = models.ForeignKey(
         Building,
         on_delete=models.CASCADE,

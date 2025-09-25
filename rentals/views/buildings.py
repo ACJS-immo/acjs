@@ -8,6 +8,9 @@ from rentals.models.buildings import Building
 from django.views.generic import DetailView, ListView
 from django.db.models import Prefetch
 
+from rentals.models.real_estate_units import RealEstateUnit
+
+
 class BuildingDetailView(DetailView):
     model = Building
     template_name = 'rentals/buildings/building_detail.html'
@@ -15,16 +18,11 @@ class BuildingDetailView(DetailView):
     def get_queryset(self):
         return Building.objects.prefetch_related(
             Prefetch(
-                'properties',
-                queryset=Property.objects.all(),
-                to_attr='prefetched_properties'
-            ),
-            Prefetch(
-                'charge_distributions',
-                queryset=ChargeDistribution.objects.all(),
-                to_attr='prefetched_charge_distributions'
-            )
-        ).select_related('owner')
+                'real_estate_units',  # ✅ Renommé
+                queryset=RealEstateUnit.objects.all(),  # ✅ Mis à jour
+                to_attr='prefetched_real_estate_units'  # ✅ Renommé
+                )
+            ).select_related('owner')
 
 class BuildingListView(ListView):
     model = Building

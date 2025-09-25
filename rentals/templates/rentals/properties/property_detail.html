@@ -32,13 +32,6 @@
                             <span class="badge bg-danger">Rented</span>
                         {% endif %}
                     </li>
-                    <li class="list-group-item"><strong>General Charges Distribution:</strong>
-                        {% for dist in property.charge_distributions.all %}
-                            {{ dist.distribution_percentage }}% (since {{ dist.start_date|date:"Y-m-d" }})
-                        {% empty %}
-                            Not defined
-                        {% endfor %}
-                    </li>
                 </ul>
             </div>
         </div>
@@ -47,17 +40,6 @@
             <p class="card-text">{{ property.description|default:"No description." }}</p>
         </div>
     </div>
-    <div class="card-footer">
-        <a href="{% url 'rentals:properties_update' property.pk %}" class="btn btn-warning">
-            <i class="bi bi-pencil"></i> Edit
-        </a>
-        <a href="{% url 'rentals:properties_delete' property.pk %}" class="btn btn-danger">
-            <i class="bi bi-trash"></i> Delete
-        </a>
-        <a href="{% url 'rentals:properties_list' %}" class="btn btn-secondary">
-            <i class="bi bi-arrow-left"></i> Back to List
-        </a>
-    </div>
 </div>
 
 <!-- Active Lease (if any) -->
@@ -65,7 +47,7 @@
 <h3 class="mt-4">Active Lease</h3>
 <div class="card">
     <div class="card-body">
-        {% for lease in property.active_leases %}
+        {% with lease=property.active_lease %}
         <div class="row">
             <div class="col-md-6">
                 <h5 class="card-title">Lease #{{ lease.id }}</h5>
@@ -95,7 +77,7 @@
         <div class="mt-3">
             <a href="{% url 'rentals:leases_detail' lease.pk %}" class="btn btn-info">View Lease Details</a>
         </div>
-        {% endfor %}
+        {% endwith %}
     </div>
 </div>
 {% endif %}
@@ -114,7 +96,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for lease in property.lease_contracts.all %}
+            {% for lease in property.lease_history %}
             <tr>
                 <td>{{ lease.tenant }}</td>
                 <td>{{ lease.start_date|date:"Y-m-d" }}</td>
@@ -129,7 +111,7 @@
                     </span>
                 </td>
                 <td>
-                    <a href="{% url 'leases:detail' lease.pk %}" class="btn btn-sm btn-info">View</a>
+                    <a href="{% url 'rentals:leases_detail' lease.pk %}" class="btn btn-sm btn-info">View</a>
                 </td>
             </tr>
             {% empty %}

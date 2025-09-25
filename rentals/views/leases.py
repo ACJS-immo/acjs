@@ -4,18 +4,24 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from rentals.models.leases import LeaseContract
 from rentals.models.properties import Property
 
-class LeaseListView(LoginRequiredMixin, ListView):
+from django.views.generic import DetailView, ListView
+from django.db.models import Prefetch
+
+class LeaseDetailView(DetailView):
+    model = LeaseContract
+    template_name = 'rentals/leases/lease_detail.html'
+
+    def get_queryset(self):
+        return LeaseContract.objects.select_related('property', 'tenant')
+
+class LeaseListView(ListView):
     model = LeaseContract
     template_name = 'rentals/leases/lease_list.html'
     context_object_name = 'leases'
-    paginate_by = 10
 
     def get_queryset(self):
-        return super().get_queryset().select_related('property', 'tenant')
+        return LeaseContract.objects.select_related('property', 'tenant').order_by('-start_date')
 
-class LeaseDetailView(LoginRequiredMixin, DetailView):
-    model = LeaseContract
-    template_name = 'rentals/leases/lease_detail.html'
 
 class LeaseCreateView(LoginRequiredMixin, CreateView):
     model = LeaseContract
@@ -25,7 +31,7 @@ class LeaseCreateView(LoginRequiredMixin, CreateView):
         'has_solidarity_clause', 'flat_rate_charges', 'deposit_amount',
         'status', 'contract_document', 'notes'
     ]
-    success_url = reverse_lazy('leases:list')
+    success_url = reverse_lazy('rentals:leases_list')
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
@@ -43,9 +49,9 @@ class LeaseUpdateView(LoginRequiredMixin, UpdateView):
     ]
 
     def get_success_url(self):
-        return reverse('leases:detail', kwargs={'pk': self.object.pk})
+        return reverse('rentals:leases_detail', kwargs={'pk': self.object.pk})
 
 class LeaseDeleteView(LoginRequiredMixin, DeleteView):
     model = LeaseContract
     template_name = 'rentals/leases/lease_confirm_delete.html'
-    success_url = reverse_lazy('leases:list')
+    success_url = reverse_lazy('rentals:leases_list')

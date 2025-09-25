@@ -20,7 +20,7 @@
             <div class="col-md-6">
                 <h5 class="card-title">Lease Status</h5>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item"><strong>Active Leases:</strong> {{ tenant.lease_contracts.filter(status='active').count }}</li>
+                    <li class="list-group-item"><strong>Active Leases:</strong> {{ tenant.active_leases_count }}</li>
                     <li class="list-group-item"><strong>Total Leases:</strong> {{ tenant.lease_contracts.count }}</li>
                 </ul>
             </div>
@@ -52,7 +52,7 @@
 </div>
 
 <!-- Active Leases -->
-{% if tenant.lease_contracts.filter(status='active').exists %}
+{% if tenant.has_active_lease %}
 <h3 class="mt-4">Active Leases</h3>
 <div class="table-responsive">
     <table class="table table-striped">
@@ -67,7 +67,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for lease in tenant.lease_contracts.filter(status='active') %}
+            {% for lease in tenant.active_leases %}
             <tr>
                 <td>{{ lease.property }}</td>
                 <td>{{ lease.get_lease_type_display }}</td>
@@ -75,7 +75,7 @@
                 <td>{{ lease.end_date|date:"Y-m-d"|default:"--" }}</td>
                 <td>${{ lease.total_monthly_amount }}</td>
                 <td>
-                    <a href="{% url 'leases:detail' lease.pk %}" class="btn btn-sm btn-info">View</a>
+                    <a href="{% url 'rentals:leases_detail' lease.pk %}" class="btn btn-sm btn-info">View</a>
                 </td>
             </tr>
             {% endfor %}
@@ -115,7 +115,7 @@
                     </span>
                 </td>
                 <td>
-                    <a href="{% url 'leases:detail' lease.pk %}" class="btn btn-sm btn-info">View</a>
+                    <a href="{% url 'rentals:leases_detail' lease.pk %}" class="btn btn-sm btn-info">View</a>
                 </td>
             </tr>
             {% empty %}

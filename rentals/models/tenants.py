@@ -32,3 +32,31 @@ class Tenant(models.Model):
 
     def get_absolute_url(self):
         return reverse('tenants:detail', args=[str(self.id)])
+
+    @property
+    def active_leases(self):
+        """Retourne les baux actifs pour ce locataire (optimisé pour prefetch_related)."""
+        if hasattr(self, 'prefetched_leases'):  # Si les données sont préchargées
+            return [lease for lease in self.prefetched_leases if lease.status == 'active']
+        return self.lease_contracts.filter(status='active')
+
+    @property
+    def has_active_lease(self):
+        """Retourne True si ce locataire a un bail actif."""
+        if hasattr(self, 'prefetched_leases'):
+            return any(lease.status == 'active' for lease in self.prefetched_leases)
+        return self.lease_contracts.filter(status='active').exists()
+
+    @property
+    def total_leases_count(self):
+        """Retourne le nombre total de baux pour ce locataire."""
+        if hasattr(self, 'prefetched_leases'):
+            return len(self.prefetched_leases)
+        return self.lease_contracts.count()
+
+    @property
+    def active_leases_count(self):
+        """Retourne le nombre de baux actifs pour ce locataire."""
+        if hasattr(self, 'prefetched_leases'):
+            return len([lease for lease in self.prefetched_leases if lease.status == 'active'])
+        return self.lease_contracts.filter(status='active').count()

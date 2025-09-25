@@ -1,17 +1,9 @@
-from django.db.models import Prefetch
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy, reverse
+from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
+from django.db.models import Prefetch
 
-from rentals.models import LeaseContract
-from rentals.models.properties import Property
-
-
-class PropertyListView(LoginRequiredMixin, ListView):
-    model = Property
-    template_name = 'rentals/properties/property_list.html'
-    context_object_name = 'properties'
-    paginate_by = 10
+from rentals.models import Property, LeaseContract
 
 
 class PropertyDetailView(DetailView):
@@ -22,10 +14,19 @@ class PropertyDetailView(DetailView):
         return Property.objects.prefetch_related(
             Prefetch(
                 'lease_contracts',
-                queryset=LeaseContract.objects.select_related('tenant', 'property'),
-                to_attr='prefetched_leases'  # Stocke les baux préchargés dans cet attribut
-                )
+                queryset=LeaseContract.objects.select_related('tenant'),
+                to_attr='prefetched_leases'
             )
+        ).select_related('building', 'owner')
+
+class PropertyListView(ListView):
+    model = Property
+    template_name = 'rentals/properties/property_list.html'
+    context_object_name = 'properties'
+    paginate_by = 10
+
+    def get_queryset(self):
+        return Property.objects.select_related('building', 'owner')
 
 
 class PropertyCreateView(LoginRequiredMixin, CreateView):

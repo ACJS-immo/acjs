@@ -21,6 +21,8 @@
                 <th>First Name</th>
                 <th>Email</th>
                 <th>Phone</th>
+                <th>Active Leases</th>
+                <th>Total Leases</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -31,6 +33,8 @@
                 <td>{{ tenant.first_name }}</td>
                 <td>{{ tenant.email }}</td>
                 <td>{{ tenant.phone|default:"--" }}</td>
+                <td>{{ tenant.active_leases_count }}</td>
+                <td>{{ tenant.total_leases_count }}</td>
                 <td>
                     <a href="{% url 'rentals:tenants_detail' tenant.pk %}" class="btn btn-sm btn-info">
                         <i class="bi bi-eye"></i> View

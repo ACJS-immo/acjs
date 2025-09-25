@@ -1,93 +1,77 @@
-from django.db import models
 from django.core.validators import MinValueValidator
+from django.db import models
+from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
-from .buildings import Building
-from .owners import Owner
 
 class PropertyType(models.TextChoices):
-    APARTMENT = 'apartment', 'Apartment'
-    HOUSE = 'house', 'House'
-    ROOM = 'room', 'Room (for shared accommodation)'
+    APARTMENT = 'apartment', _("Apartment")
+    HOUSE = 'house', _("House")
+    ROOM = 'room', _("Room (for shared accommodation)")
 
 class Property(models.Model):
-    """Represents a rentable unit (apartment, house, or individual room)."""
     building = models.ForeignKey(
-        Building,
-        on_delete=models.CASCADE,
-        related_name='properties'
+        'Building', on_delete=models.CASCADE,
+        related_name='properties', verbose_name=_("Building")
     )
     owner = models.ForeignKey(
-        Owner,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='properties',
-        help_text="Owner of this specific property (defaults to building owner)."
+        'Owner', on_delete=models.SET_NULL, null=True, blank=True,
+        related_name='properties', verbose_name=_("Owner")
     )
     property_type = models.CharField(
-        max_length=20,
-        choices=PropertyType.choices
+        max_length=20, choices=PropertyType.choices,
+        verbose_name=_("Property Type")
     )
     unit_number = models.CharField(
-        max_length=50,
-        help_text="Apartment number, room number, or other identifier."
+        max_length=50, verbose_name=_("Unit Number"),
+        help_text=_("Apartment number, room number, or other identifier.")
     )
     size_m2 = models.DecimalField(
-        max_digits=6,
-        decimal_places=2,
-        validators=[MinValueValidator(0)]
+        max_digits=6, decimal_places=2,
+        verbose_name=_("Size (m²)"), validators=[MinValueValidator(0)]
     )
     monthly_rent = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        validators=[MinValueValidator(0)]
+        max_digits=10, decimal_places=2,
+        verbose_name=_("Monthly Rent"), validators=[MinValueValidator(0)]
     )
     specific_charges = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        default=0,
-        validators=[MinValueValidator(0)],
-        help_text="Monthly charges specific to this unit (e.g., individual water meter)."
+        max_digits=10, decimal_places=2, default=0,
+        verbose_name=_("Specific Charges"), validators=[MinValueValidator(0)]
     )
-    is_available = models.BooleanField(default=True)
-    description = models.TextField(blank=True)
+    is_available = models.BooleanField(default=True, verbose_name=_("Available"))
+    description = models.TextField(blank=True, verbose_name=_("Description"))
 
     class Meta:
-        verbose_name = "Property"
-        verbose_name_plural = "Properties"
+        verbose_name = _("Property")
+        verbose_name_plural = _("Properties")
         ordering = ['building__name', 'unit_number']
 
     def __str__(self):
         return f"{self.get_property_type_display()} {self.unit_number} ({self.building.name})"
 
-    def get_absolute_url(self):
-        return reverse('rentals:properties_detail', args=[str(self.id)])
-
+    @property
     def total_monthly_cost(self):
-        """Returns total monthly cost (rent + specific charges)."""
+        """Retourne le coût mensuel total (loyer + charges spécifiques)."""
         return self.monthly_rent + self.specific_charges
 
+    @property
     def current_owner(self):
-        """Returns the effective owner (property owner or building owner)."""
+        """Retourne le propriétaire effectif (propriétaire de la propriété ou de l'immeuble)."""
         return self.owner if self.owner else self.building.owner
 
     @property
-    def active_leases(self):
-        """Retourne une liste des baux actifs pour cette propriété.
-
-           Utilise les données préchargées si disponibles (via prefetch_related),
-           sinon effectue une requête en base de données.
-
-           Returns:
-               QuerySet: Liste des baux actifs.
-           """
-        if hasattr(self, 'prefetched_leases'):  # Si les données sont préchargées
-            return [lease for lease in self.prefetched_leases if lease.status == 'active']
-        return self.lease_contracts.filter(status='active')
+    def active_lease(self):
+        """Retourne le bail actif pour cette propriété (ou None)."""
+        return self.lease_contracts.filter(status='active').first()
 
     @property
     def has_active_lease(self):
         """Retourne True si cette propriété a un bail actif."""
-        if hasattr(self, 'prefetched_leases'):
-            return any(lease.status == 'active' for lease in self.prefetched_leases)
         return self.lease_contracts.filter(status='active').exists()
+
+    @property
+    def lease_history(self):
+        """Retourne l'historique des baux pour cette propriété."""
+        return self.lease_contracts.all().order_by('-start_date')
+
+    def get_absolute_url(self):
+        return reverse('rentals:properties_detail', args=[str(self.id)])

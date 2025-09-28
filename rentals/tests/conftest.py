@@ -35,7 +35,7 @@ def building(owner):
 def real_estate_unit(building):
     return RealEstateUnit.objects.create(
         building=building,
-        property_type='apartment',
+        unit_type='apartment',
         unit_number="A1",
         size_m2=30.0,
         monthly_rent=800.0,

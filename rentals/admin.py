@@ -1,6 +1,6 @@
 from django.contrib import admin
 from rentals.models.owners import Owner
-from rentals.models.buildings import Building, ChargeDistribution
+from rentals.models.buildings import Building
 from rentals.models.real_estate_units import RealEstateUnit
 from rentals.models.tenants import Tenant
 from rentals.models.leases import LeaseContract
@@ -43,8 +43,3 @@ class LeaseContractAdmin(admin.ModelAdmin):
         return obj.total_monthly_amount()
     total_monthly_amount.short_description = 'Monthly Amount ($)'
 
-@admin.register(ChargeDistribution)
-class ChargeDistributionAdmin(admin.ModelAdmin):
-    list_display = ('building', 'real_estate_unit', 'distribution_percentage', 'start_date', 'end_date')
-    search_fields = ('building__name', 'real_estate_unit__unit_number')
-    list_filter = ('building', 'start_date')

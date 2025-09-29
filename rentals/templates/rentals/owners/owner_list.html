@@ -29,7 +29,7 @@
                 <td>{{ owner.email }}</td>
                 <td>{{ owner.phone|default:"--" }}</td>
                 <td>{{ owner.buildings.count }}</td>
-                <td>{{ owner.properties.count }}</td>
+                <td>{{ owner.real_estate_unit.count }}</td>
                 <td>
                     <a href="{% url 'rentals:owners_detail' owner.pk %}" class="btn btn-sm btn-info">
                         <i class="bi bi-eye"></i> View

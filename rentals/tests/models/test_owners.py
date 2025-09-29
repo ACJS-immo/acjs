@@ -29,7 +29,7 @@ class TestOwnerModel:
     def test_properties_count_and_total_revenue(self, owner):
         # Needs a building to attach units
         building = Building.objects.create(name="Résidence Parc", address="10 avenue du Parc", owner=owner)
-        assert owner.properties_count == 0
+        assert owner.real_estate_unit_count == 0
         assert owner.total_revenue == 0
 
         # Create two units owned directly by this owner
@@ -52,7 +52,7 @@ class TestOwnerModel:
             is_available=False,
         )
 
-        assert owner.properties_count == 2
+        assert owner.real_estate_unit_count == 2
         # total_revenue sums monthly_rent of all units linked to owner
         from decimal import Decimal
         assert owner.total_revenue == Decimal('1550.00')

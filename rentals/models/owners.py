@@ -33,7 +33,7 @@ class Owner(models.Model):
         return self.buildings.count()
 
     @property
-    def properties_count(self):
+    def real_estate_unit_count(self):
         """Retourne le nombre de propriétés possédées par ce propriétaire."""
         return self.real_estate_units.count()
 

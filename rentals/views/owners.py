@@ -1,10 +1,12 @@
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Prefetch
+from django.urls import reverse_lazy, reverse
+from django.views.generic import CreateView, UpdateView, DeleteView
+from django.views.generic import DetailView, ListView
+
+from rentals.models import Building, RealEstateUnit
 from rentals.models.owners import Owner
 
-from django.views.generic import DetailView, ListView
-from django.db.models import Prefetch
 
 class OwnerDetailView(DetailView):
     model = Owner
@@ -13,8 +15,9 @@ class OwnerDetailView(DetailView):
     def get_queryset(self):
         return Owner.objects.prefetch_related(
             Prefetch('buildings', queryset=Building.objects.all(), to_attr='prefetched_buildings'),
-            Prefetch('real_estate_units', queryset=Property.objects.all(), to_attr='prefetched_properties')
+            Prefetch('real_estate_units', queryset=RealEstateUnit.objects.all(), to_attr='prefetched_properties')
         )
+
 
 class OwnerListView(ListView):
     model = Owner
@@ -33,6 +36,7 @@ class OwnerCreateView(LoginRequiredMixin, CreateView):
     fields = ['first_name', 'last_name', 'email', 'phone', 'address', 'tax_number', 'notes']
     success_url = reverse_lazy('rentals:owners_list')
 
+
 class OwnerUpdateView(LoginRequiredMixin, UpdateView):
     model = Owner
     template_name = 'rentals/owners/owner_form.html'
@@ -40,6 +44,7 @@ class OwnerUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse('rentals:owners_detail', kwargs={'pk': self.object.pk})
+
 
 class OwnerDeleteView(LoginRequiredMixin, DeleteView):
     model = Owner

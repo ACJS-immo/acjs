@@ -20,7 +20,7 @@
                 <h5 class="card-title">Portfolio</h5>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item"><strong>Buildings:</strong> {{ owner.buildings_count }}</li>
-                    <li class="list-group-item"><strong>Properties:</strong> {{ owner.properties_count }}</li>
+                    <li class="list-group-item"><strong>Properties:</strong> {{ owner.real_estate_unit_count }}</li>
                     <li class="list-group-item"><strong>Total Revenue:</strong> ${{ owner.total_revenue|floatformat:2 }}</li>
                 </ul>
             </div>
@@ -45,7 +45,7 @@
             <tr>
                 <td>{{ building.name }}</td>
                 <td>{{ building.address }}</td>
-                <td>{{ building.properties_count }}</td>
+                <td>{{ building.real_estate_unit_count }}</td>
                 <td>
                     <a href="{% url 'rentals:buildings_detail' building.pk %}" class="btn btn-sm btn-info">View</a>
                 </td>

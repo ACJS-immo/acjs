@@ -83,13 +83,15 @@ def send_lease_confirmation_email(sender, instance, created, **kwargs):
             f"Merci de bien vouloir signer le contrat joint.\n\n"
             f"Cordialement,\nL'équipe de gestion"
         )
-        send_mail(
-            subject,
-            message,
-            settings.DEFAULT_FROM_EMAIL,
-            [instance.tenant.email],
-            fail_silently=False,
-        )
+        # Envoie le mail au locataire
+        # TODO
+        # send_mail(
+        #     subject,
+        #     message,
+        #     settings.DEFAULT_FROM_EMAIL,
+        #     [instance.tenant.email],
+        #     fail_silently=False,
+        # )
 
 
 @receiver(post_save, sender=Owner)

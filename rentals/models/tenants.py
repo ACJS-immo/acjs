@@ -60,3 +60,8 @@ class Tenant(models.Model):
         if hasattr(self, 'prefetched_leases'):
             return len([lease for lease in self.prefetched_leases if lease.status == 'active'])
         return self.lease_contracts.filter(status='active').count()
+
+    @property
+    def full_name(self):
+        """Retourne le nom complet du locataire."""
+        return f"{self.first_name} {self.last_name}"

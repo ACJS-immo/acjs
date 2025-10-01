@@ -9,6 +9,7 @@ from rentals.models.leases import LeaseContract
 class LeaseDetailView(DetailView):
     model = LeaseContract
     template_name = 'rentals/leases/lease_detail.html'
+    context_object_name = 'lease'
 
     def get_queryset(self):
         return LeaseContract.objects.select_related('real_estate_unit', 'tenant')

@@ -3,7 +3,7 @@
 {% block title %}{{ property.building.name }} - {{ property.unit_number }}{% endblock %}
 
 {% block content %}
-div class="card mb-4">
+<div class="card mb-4">
     <div class="card-header bg-primary text-white">
         <h2>{{ real_estate_unit.get_unit_type_display }} {{ real_estate_unit.unit_number }}</h2>  <!-- ✅ Mis à jour -->
     </div>
@@ -24,9 +24,9 @@ div class="card mb-4">
             <div class="col-md-6">
                 <h5 class="card-title">Ownership & Status</h5>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item"><strong>Owner:</strong> {% if property.current_owner %}{{ property.current_owner }}{% else %}None{% endif %}</li>
+                    <li class="list-group-item"><strong>Owner:</strong> {% if real_estate_unit.current_owner %}{{ real_estate_unit.current_owner }}{% else %}None{% endif %}</li>
                     <li class="list-group-item"><strong>Status:</strong>
-                        {% if property.is_available %}
+                        {% if real_estate_unit.is_available %}
                             <span class="badge bg-success">Available</span>
                         {% else %}
                             <span class="badge bg-danger">Rented</span>
@@ -37,17 +37,17 @@ div class="card mb-4">
         </div>
         <div class="mt-3">
             <h5 class="card-title">Description</h5>
-            <p class="card-text">{{ property.description|default:"No description." }}</p>
+            <p class="card-text">{{ real_estate_unit.description|default:"No description." }}</p>
         </div>
     </div>
 </div>
 
 <!-- Active Lease (if any) -->
-{% if property.has_active_lease %}
+{% if real_estate_unit.has_active_lease %}
 <h3 class="mt-4">Active Lease</h3>
 <div class="card">
     <div class="card-body">
-        {% with lease=property.active_lease %}
+        {% with lease=real_estate_unit.active_lease %}
         <div class="row">
             <div class="col-md-6">
                 <h5 class="card-title">Lease #{{ lease.id }}</h5>
@@ -61,12 +61,12 @@ div class="card mb-4">
             <div class="col-md-6">
                 <h5 class="card-title">Financial Details</h5>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item"><strong>Monthly Rent:</strong> ${{ lease.property.monthly_rent }}</li>
+                    <li class="list-group-item"><strong>Monthly Rent:</strong> ${{ lease.real_estate_unit.monthly_rent }}</li>
                     <li class="list-group-item"><strong>Charges:</strong>
                         {% if lease.lease_type == 'colocation' %}
                             ${{ lease.flat_rate_charges }} (flat rate)
                         {% else %}
-                            ${{ lease.property.specific_charges }} (specific)
+                            ${{ lease.real_estate_unit.specific_charges }} (specific)
                         {% endif %}
                     </li>
                     <li class="list-group-item"><strong>Total Monthly:</strong> ${{ lease.total_monthly_amount }}</li>
@@ -96,7 +96,7 @@ div class="card mb-4">
             </tr>
         </thead>
         <tbody>
-            {% for lease in property.lease_history %}
+            {% for lease in real_estate_unit.lease_history %}
             <tr>
                 <td>{{ lease.tenant }}</td>
                 <td>{{ lease.start_date|date:"Y-m-d" }}</td>

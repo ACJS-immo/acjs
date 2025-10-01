@@ -8,7 +8,8 @@ from rentals.models import RealEstateUnit, LeaseContract
 
 class RealEstateUnitDetailView(DetailView):  # ✅ Renommé
     model = RealEstateUnit  # ✅ Mis à jour
-    template_name = 'rentals/real_estate_units/real_estate_unit_detail.html'  # ✅ Renommé
+    template_name = 'rentals/real_estate_units/real_estate_unit_detail.html'  # ✅ Corrigé
+    context_object_name = 'real_estate_unit'
 
     def get_queryset(self):
         return RealEstateUnit.objects.prefetch_related(  # ✅ Mis à jour
@@ -21,7 +22,7 @@ class RealEstateUnitDetailView(DetailView):  # ✅ Renommé
 
 class RealEstateUnitListView(ListView):
     model = RealEstateUnit
-    template_name = 'rentals/real_estate_units/real_estate_units_list.html'
+    template_name = 'rentals/real_estate_units/real_estate_unit_list.html'
     context_object_name = 'real_estate_units'
     paginate_by = 10
 
@@ -31,27 +32,27 @@ class RealEstateUnitListView(ListView):
 
 class RealEstateUnitCreateView(LoginRequiredMixin, CreateView):
     model = RealEstateUnit
-    template_name = 'rentals/real_estate_units/real_estate_units_form.html'
+    template_name = 'rentals/real_estate_units/real_estate_unit_form.html'
     fields = [
-        'building', 'owner', 'property_type', 'unit_number',
+        'building', 'owner', 'unit_type', 'unit_number',
         'size_m2', 'monthly_rent', 'specific_charges', 'is_available', 'description'
         ]
-    success_url = reverse_lazy('rentals:real_estate_units_list')
+    success_url = reverse_lazy('rentals:real_estate_unit_list')
 
 
 class RealEstateUnitUpdateView(LoginRequiredMixin, UpdateView):
     model = RealEstateUnit
-    template_name = 'rentals/real_estate_units/real_estate_units_form.html'
+    template_name = 'rentals/real_estate_units/real_estate_unit_form.html'
     fields = [
-        'building', 'owner', 'property_type', 'unit_number',
+        'building', 'owner', 'unit_type', 'unit_number',
         'size_m2', 'monthly_rent', 'specific_charges', 'is_available', 'description'
         ]
 
     def get_success_url(self):
-        return reverse('rentals:real_estate_units_detail', kwargs={'pk': self.object.pk})
+        return reverse('rentals:real_estate_unit_detail', kwargs={'pk': self.object.pk})
 
 
 class RealEstateUnitDeleteView(LoginRequiredMixin, DeleteView):
     model = RealEstateUnit
-    template_name = 'rentals/real_estate_units/real_estate_units_confirm_delete.html'
+    template_name = 'rentals/real_estate_units/real_estate_unit_confirm_delete.html'
     success_url = reverse_lazy('rentals:real_estate_units_list')

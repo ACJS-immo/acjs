@@ -12,9 +12,9 @@
             <div class="col-md-6">
                 <h5 class="card-title">Property Information</h5>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item"><strong>Building:</strong> {{ lease.property.building.name }}</li>
-                    <li class="list-group-item"><strong>Property:</strong> {{ lease.property.get_property_type_display }} {{ lease.property.unit_number }}</li>
-                    <li class="list-group-item"><strong>Address:</strong> {{ lease.property.building.address }}</li>
+                    <li class="list-group-item"><strong>Building:</strong> {{ lease.real_estate_unit.building.name }}</li>
+                    <li class="list-group-item"><strong>Property:</strong> {{ lease.real_estate_unit.get_property_type_display }} {{ lease.real_estate_unit.unit_number }}</li>
+                    <li class="list-group-item"><strong>Address:</strong> {{ lease.real_estate_unit.building.address }}</li>
                 </ul>
             </div>
             <div class="col-md-6">
@@ -52,12 +52,12 @@
             <div class="col-md-6">
                 <h5 class="card-title">Financial Details</h5>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item"><strong>Monthly Rent:</strong> ${{ lease.property.monthly_rent }}</li>
+                    <li class="list-group-item"><strong>Monthly Rent:</strong> ${{ lease.real_estate_unit.monthly_rent }}</li>
                     <li class="list-group-item"><strong>Charges:</strong>
                         {% if lease.lease_type == 'colocation' %}
                             ${{ lease.flat_rate_charges }} (flat rate)
                         {% else %}
-                            ${{ lease.property.specific_charges }} (specific)
+                            ${{ lease.real_estate_unit.specific_charges }} (specific)
                         {% endif %}
                     </li>
                     <li class="list-group-item"><strong>Total Monthly Amount:</strong> ${{ lease.total_monthly_amount }}</li>

@@ -17,7 +17,7 @@ class TenantListView(LoginRequiredMixin, ListView):
         return Tenant.objects.prefetch_related(
             Prefetch(
                 'lease_contracts',
-                queryset=LeaseContract.objects.select_related('property'),
+                queryset=LeaseContract.objects.select_related('real_estate_unit'),
                 to_attr='prefetched_leases'
                 )
             )
@@ -31,7 +31,7 @@ class TenantDetailView(LoginRequiredMixin, DetailView):
         return Tenant.objects.prefetch_related(
             Prefetch(
                 'lease_contracts',
-                queryset=LeaseContract.objects.select_related('property', 'tenant'),
+                queryset=LeaseContract.objects.select_related('real_estate_unit', 'tenant'),
                 to_attr='prefetched_leases'  # Stocke les baux préchargés dans cet attribut
                 )
             )
